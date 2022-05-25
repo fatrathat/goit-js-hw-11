@@ -1,0 +1,2 @@
+.gallery{display:flex;flex-wrap:wrap}.search-form{display:flex;justify-content:center;padding:20px;margin-bottom:20px;background-color:#4169e1}.photo-card{width:250px;box-shadow:10px 10px 8px 2px rgba(0,0,0,.3);margin-bottom:20px;border-radius:10px}.info{display:flex}*,:after,:before{box-sizing:border-box}ol[class],ul[class]{padding:0}blockquote,body,dd,dl,figcaption,figure,h1,h2,h3,h4,li,ol[class],p,ul[class]{margin:0}img{max-width:100%;display:block}button,input,select,textarea{font:inherit}
+/*# sourceMappingURL=/goit-js-hw-11/src.161c8194.css.map */
