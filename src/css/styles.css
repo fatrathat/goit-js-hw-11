@@ -1,6 +1,10 @@
 .gallery {
+  padding: 10px;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
+  margin-left: -10px;
+  margin-top: -10px;
 }
 
 .search-form {
@@ -15,9 +19,16 @@
   width: 250px;
   box-shadow: 10px 10px 8px 2px rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-top: 10px;
+  flex-basis: calc((100% - 40px) / 4);
 }
 
 .info {
   display: flex;
+}
+
+.is-hidden {
+  display: none;
 }
