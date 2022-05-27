@@ -26,7 +26,12 @@
     "sass": "^1.32.8"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "infinite-scroll": "^4.0.1",
+    "jquery": "^3.6.0",
+    "modern-normalize": "^1.1.0",
     "notiflix": "^3.2.5",
-    "simplelightbox": "^2.10.3"
+    "simplelightbox": "^2.10.3",
+    "virtual-scroller": "^1.9.1"
   }
 }
