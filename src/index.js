@@ -76,7 +76,7 @@ const handleSubmit = event => {
 
   axiosPhotos(refs.form.searchQuery.value)
     .then(photos => {
-      if (photos.data.totalHits !== 0) {
+      if (refs.form.searchQuery.value.trim('').length !== 0) {
         refs.gallery.innerHTML = '';
         renderPhotos(photos);
         Notiflix.Notify.success(`Hooray! We found ${photos.data.totalHits} images.`);
