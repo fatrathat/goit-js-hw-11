@@ -1,6 +1,8 @@
+import 'animate.css';
 import './css/styles.css';
-// import './css/reset.css';
+import './css/reset.css';
 import 'modern-normalize/modern-normalize.css';
+
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { axiosPhotos } from './serverAPI';
@@ -10,10 +12,30 @@ const refs = {
   form: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
   btnLoad: document.querySelector('.load-more'),
+  upBtn: document.querySelector('#upBtn'),
 };
 
 let page = 2;
 let gallery = new SimpleLightbox('.gallery a');
+
+const getPhotos = searchQuery => {
+  axiosPhotos(searchQuery)
+    .then(photos => {
+      if (searchQuery.trim('').length > 0 && photos.data.totalHits !== 0) {
+        refs.gallery.innerHTML = '';
+        renderPhotos(photos);
+        Notiflix.Notify.success(`Hooray! We found ${photos.data.totalHits} images.`);
+        console.log(photos.data.totalHits);
+      } else {
+        Notiflix.Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.',
+        );
+      }
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
 
 const scrollPage = () => {
   const { height: cardHeight } = document
@@ -25,6 +47,7 @@ const scrollPage = () => {
     behavior: 'smooth',
   });
 };
+
 const infiniteScroll = () => {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
   if (clientHeight + scrollTop >= scrollHeight) {
@@ -35,30 +58,45 @@ const infiniteScroll = () => {
 const renderPhotos = photo => {
   const markup = photo.data.hits
     .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-      return `<a class='card-link' href='${largeImageURL}'>
-                <div class="photo-card">   
-                 <img class="img" src="${webformatURL}" alt="${tags}" loading="lazy" />
-                 <div class="info">
-                   <p class="info-item">
-                     <b>Likes: ${likes}</b>
-                   </p>
-                   <p class="info-item">
-                     <b>Views: ${views}</b>
-                   </p>
-                   <p class="info-item">
-                     <b>Comments: ${comments}</b>
-                   </p>
-                   <p class="info-item">
-                     <b>Downloads: ${downloads}</b>
-                   </p>
-                 </div>
-               </div>
-              </a>`;
+      return `<li class="gallery-item">
+                <a class='card-link' href='${largeImageURL}'>
+                  <div class="photo-card">   
+                    <img class="card-img" src="${webformatURL}" alt="${tags}" loading="lazy" />
+                    <ul class="info">
+                      <li class="info-item">
+                        <p class="info-item">
+                          <b>Likes:</b>
+                        </p>
+                        <p>${likes}</p>
+                      </li>
+                      <li class="info-item">
+                        <p class="info-item">
+                          <b>Views:</b>
+                        </p>
+                        <p>${views}</p>
+                     </li>
+                     <li class="info-item">
+                        <p class="info-item">
+                          <b>Comments:</b>
+                        </p>
+                        <p>${comments}</p>
+                      </li>
+                      <li class="info-item">
+                        <p class="info-item">
+                          <b>Downloads:</b>
+                        </p>
+                        <p>${downloads}</p>
+                      </li>
+                    </ul>
+                  </div>
+                </a>
+              </li>`;
     })
     .join(' ');
   refs.gallery.insertAdjacentHTML('beforeend', markup);
   gallery.refresh();
 };
+
 const uploadMore = () => {
   axiosPhotos(refs.form.searchQuery.value, page)
     .then(data => {
@@ -73,26 +111,24 @@ const uploadMore = () => {
 
 const handleSubmit = event => {
   event.preventDefault();
-
-  axiosPhotos(refs.form.searchQuery.value)
-    .then(photos => {
-      if (refs.form.searchQuery.value.trim('').length !== 0) {
-        refs.gallery.innerHTML = '';
-        renderPhotos(photos);
-        Notiflix.Notify.success(`Hooray! We found ${photos.data.totalHits} images.`);
-      } else {
-        Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-        );
-      }
-    })
-    .catch(e => {
-      console.log(e);
-    });
+  getPhotos(refs.form.searchQuery.value);
 };
-const handleScroll = event => {
+
+const handleScroll = () => {
   infiniteScroll();
+};
+
+const scrollUp = () => {
+  window.scrollTo(screenX, 0);
+};
+
+const hideScrollBtn = () => {
+  document.documentElement.scrollTop !== 0
+    ? (refs.upBtn.style.display = 'inline-block')
+    : (refs.upBtn.style.display = 'none');
 };
 
 refs.form.addEventListener('submit', handleSubmit);
 window.addEventListener('scroll', handleScroll);
+refs.upBtn.addEventListener('click', scrollUp);
+window.addEventListener('scroll', hideScrollBtn);
